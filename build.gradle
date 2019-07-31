@@ -26,10 +26,14 @@
 
 buildscript {
     repositories {
+        mavenLocal()
+        maven {
+            url "http://mvnrepo.alibaba-inc.com/mvn/repository"
+        }
         maven { url 'https://oss.sonatype.org/content/repositories/snapshots/' }
         maven { url "http://oss.jfrog.org/oss-snapshot-local/" }
-        mavenCentral()
-        jcenter()
+//        mavenCentral()
+//        jcenter()
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:2.2.2'
@@ -42,9 +46,13 @@ buildscript {
 
 allprojects {
     repositories {
+        mavenLocal()
+        maven {
+            url "http://mvnrepo.alibaba-inc.com/mvn/repository"
+        }
         maven { url 'https://oss.sonatype.org/content/repositories/snapshots/' }
         maven { url "http://oss.jfrog.org/oss-snapshot-local/" }
-        jcenter()
-        mavenLocal()
+//        jcenter()
+//        mavenLocal()
     }
 }

@@ -30,9 +30,11 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.alibaba.android.vlayout.LayoutHelper;
 import com.alibaba.android.vlayout.VirtualLayoutAdapter;
@@ -71,16 +73,17 @@ public class MainActivity extends Activity {
 
         final List<LayoutHelper> helpers = new LinkedList<>();
 
-        final GridLayoutHelper gridLayoutHelper = new GridLayoutHelper(4);
-        gridLayoutHelper.setItemCount(25);
+        final GridLayoutHelper gridLayoutHelper = new GridLayoutHelper(2);
+        gridLayoutHelper.setItemCount(10);
+        gridLayoutHelper.setVGap(100);
 
 
         final ScrollFixLayoutHelper scrollFixLayoutHelper = new ScrollFixLayoutHelper(FixLayoutHelper.TOP_RIGHT, 100, 100);
 
-        helpers.add(DefaultLayoutHelper.newHelper(7));
-        helpers.add(scrollFixLayoutHelper);
         helpers.add(DefaultLayoutHelper.newHelper(2));
+//        helpers.add(scrollFixLayoutHelper);
         helpers.add(gridLayoutHelper);
+        helpers.add(DefaultLayoutHelper.newHelper(10));
 
         layoutManager.setLayoutHelpers(helpers);
 
@@ -97,7 +100,12 @@ public class MainActivity extends Activity {
                                 ViewGroup.LayoutParams.MATCH_PARENT, 300);
                         holder.itemView.setLayoutParams(layoutParams);
 
-                        ((TextView) holder.itemView).setText(Integer.toString(position));
+                        if (position == 4) {
+                            ((TextView) holder.itemView).setText(Integer.toString(position) + "\n" + "请把我滚出屏幕之外 然后不断点击UPDATE按钮");
+                        } else {
+                            ((TextView) holder.itemView).setText(Integer.toString(position));
+                        }
+
 
                         if (position == 7) {
                             layoutParams.height = 60;
@@ -129,13 +137,23 @@ public class MainActivity extends Activity {
                     }
                 });
 
-        new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
+//        new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
+//            @Override
+//            public void run() {
+//                recyclerView.scrollToPosition(7);
+//                recyclerView.getAdapter().notifyDataSetChanged();
+//            }
+//        }, 6000);
+        findViewById(R.id.jump).setOnClickListener(new View.OnClickListener() {
             @Override
-            public void run() {
-                recyclerView.scrollToPosition(7);
-                recyclerView.getAdapter().notifyDataSetChanged();
+            public void onClick(View view) {
+                // 1、向上滚动Grid布局区域的view
+                // 2、直到有至少一个vGap被完全移出屏幕
+                // 3、点击更新 recyclerView会一点一点下移 直到所有的vGap都移回到屏幕内
+                recyclerView.getAdapter().notifyItemRangeChanged(2, 10);
+                Toast.makeText(MainActivity.this, "每次会往下移动一个vGap的距离 直到所有的vGap都移回到屏幕内", Toast.LENGTH_LONG).show();
             }
-        }, 6000);
+        });
     }
 
 
